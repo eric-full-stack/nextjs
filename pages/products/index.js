@@ -4,7 +4,7 @@ import Product from "../../components/product";
 import useSWR from "swr";
 import fetch from "isomorphic-unfetch";
 
-Products.getInitialProps = async ({ req, query }) => {
+export async function getServerSideProps({ req, query }) {
   const protocol = req
     ? `${req.headers["x-forwarded-proto"]}:`
     : location.protocol;
@@ -15,15 +15,16 @@ Products.getInitialProps = async ({ req, query }) => {
   const res = await fetch(pageRequest);
   const json = await res.json();
   return json;
-};
+}
 
 export default function Products({ products, page, pageCount }) {
-  const {
-    data,
-    error,
-  } = useSWR(`/api/products?page=${page}?limit=${pageCount}`, null, {
-    products,
-  });
+  const { data, error } = useSWR(
+    `/api/products?page=${page}?limit=${pageCount}`,
+    null,
+    {
+      products,
+    }
+  );
   console.log(data);
   return (
     <Layout>
